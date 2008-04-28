@@ -11,15 +11,15 @@ class AlignColumns < Tap::FileTask
   config :col_delimiter, "\t"            # column delimiter
   config :blank_value, ""                # the blank value
   
-  config :header_row, false             # specifies handling of header rows
-  config :sort_column, 0                  # specifies the sort column, index or name
+  config :header_row, false, &c.yaml(Object)   # specifies handling of header rows
+  config :sort_column, 0, &c.yaml(Object)       # specifies the sort column, index or name
   
   def format_row(data)
     data.join(col_delimiter * 2) + row_delimiter
   end
   
   def process(target, *filepaths)
-    
+
     # load the table data
     tables = filepaths.collect do |filepath|
       log_basename :align, filepath
