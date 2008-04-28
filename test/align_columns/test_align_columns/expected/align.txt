@@ -1,0 +1,8 @@
+# one.txt						# three.txt						# two.txt				
+a	data	table	one									a	data	table	two	
+b	data	table	one	(a)								b	data	table	two	
+b	data	table	one	(b)												
+c	data	table	one			c	data	table	three							
+						d	data	table	three							
+						e	data	table	three	(a)		e	data	table	two	(b)
+						e	data	table	three	(b)		e	data	table	two	(a)
