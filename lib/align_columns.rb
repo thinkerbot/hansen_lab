@@ -10,9 +10,12 @@ class AlignColumns < Tap::FileTask
   config :row_delimiter, "\n"           # row delimiter
   config :col_delimiter, "\t"            # column delimiter
   config :blank_value, ""                # the blank value
-
-  def sorting_value(row)
-    row.first  
+  
+  config :header_row, false             # specifies handling of header rows
+  config :sort_column, 0                  # specifies the sort column, index or name
+  
+  def format_row(data)
+    data.join(col_delimiter * 2) + row_delimiter
   end
   
   def process(target, *filepaths)
@@ -22,18 +25,24 @@ class AlignColumns < Tap::FileTask
       log_basename :align, filepath
       
       rows = HansenLab::NormalTable.parse_rows(File.read(filepath), row_delimiter, col_delimiter)
-      HansenLab::NormalTable.new(rows, blank_value)
+      HansenLab::NormalTable.new(rows, :default_value => blank_value, :header_row => header_row)
     end
     
     # hash rows by the sorting keys
     sorting_keys = []
     key_hashes = tables.collect do |table|
+      
+      keys = case sort_column
+      when Integer then table.rows.collect {|row| row[sort_column] }
+      else table.column(sort_column)
+      end
+      
       hash = {}
-      table.rows.each_with_index do |row, i|
-        key = sorting_value(row)
-        sorting_keys << key
+      keys.each_with_index do |key, i|
         (hash[key] ||= []) << i
       end
+      sorting_keys.concat(keys)
+      
       hash
     end
     
@@ -58,7 +67,7 @@ class AlignColumns < Tap::FileTask
     # prepare the target file and dump the results
     prepare(target) 
     File.open(target, "wb") do |file|
-      # print header
+      # print file header
       header = []
       filepaths.each_with_index do |filepath, i|
         table = tables[i]
@@ -68,7 +77,13 @@ class AlignColumns < Tap::FileTask
           header << array.join(col_delimiter)
         end
       end
-      file.print header.join(col_delimiter * 2) + row_delimiter
+      file.print format_row(header)
+      
+      # print header if applicable
+      if header_row
+        row = tables.collect {|table| table.header_row.join(col_delimiter)}
+        file.print format_row(row)
+      end
       
       sorting_keys.each do |key|
         key_rows = []
@@ -82,7 +97,7 @@ class AlignColumns < Tap::FileTask
         end
 
         key_rows.transpose.collect do |row|
-          file.print row.join(col_delimiter * 2) + row_delimiter
+          file.print format_row(row)
         end
       end
     end

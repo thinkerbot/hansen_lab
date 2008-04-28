@@ -1,0 +1,9 @@
+# one.txt						# three.txt						# two.txt				
+SORT	DATA	TABLE	ONE	SUB		THREE	DATA	TABLE	SORT	SUB		DATA	TABLE	TWO	SUB	SORT
+a	data	table	one									data	table	two		a
+b	data	table	one	(a)								data	table	two		b
+b	data	table	one	(b)												
+c	data	table	one			three	data	table	c							
+						three	data	table	d							
+						three	data	table	e	(a)		data	table	two	(b)	e
+						three	data	table	e	(b)		data	table	two	(a)	e

@@ -1,0 +1,9 @@
+THREE	DATA	TABLE	SORT	SUB
+
+three	data	table	c	
+three	data	table	d	
+
+
+
+three	data	table	e	(a)
+three	data	table	e	(b)

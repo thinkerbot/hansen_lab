@@ -1,0 +1,8 @@
+DATA	TABLE	TWO	SUB	SORT
+data	table	two		a
+
+data	table	two	(b)	e
+data	table	two	(a)	e
+
+
+data	table	two		b
