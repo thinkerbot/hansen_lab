@@ -1,0 +1,7 @@
+|AAA|Q|AAA|1|with|extra|fields|
+|.|Q|BBBBBB|2|
+|CCCCCC|Q|.|
+|FF|Q|FQFF|6 (1)|
+|FFQF|Q|FF|6 (2)|
+|GG|Q|GQGG|7 (1)|
+|GGQG|Q|GG|7 (2)|
