@@ -42,14 +42,14 @@ end
 #
 
 spec = Gem::Specification.new do |s|
-  s.name = "."
+  s.name = "hansen_lab"
   s.version = "0.0.1"
-  s.author = "Your Name Here"
-  #s.email = "your.email@pubfactory.edu"
-  #s.homepage = "http://rubyforge.org/projects/gemname/"
+  s.author = "Simon Chiang"
+  s.email = "simon.chiang@uchsc.edu"
+  s.homepage = "http://github.com/bahuvrihi/hansen_lab/tree"
   s.platform = Gem::Platform::RUBY
   s.summary = "Add Description"
-  s.files = Dir.glob("{test,lib}/**/*") + ["Rakefile", "ReadMe.txt"]
+  s.files = Dir.glob("{test,lib}/**/*") + ["Rakefile", "ReadMe.txt", "tap.yml"]
   s.require_path = "lib"
   s.test_file = "test/tap_test_suite.rb"
   
