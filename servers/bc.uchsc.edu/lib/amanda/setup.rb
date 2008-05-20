@@ -12,7 +12,12 @@ module Amanda
     config :user, 'amandabackup'
     config :group, 'disk'
 
-    config :LIBEXECDIR, '/usr/lib/amanda'
+    config :libexecdir, '/usr/lib/amanda'
+    config :space, "/dumps"
+
+    def localhost
+      'amandahost.yourdomain.com'
+    end
 
     def path(*paths)
       filepath(amanda_dir, *paths)
@@ -50,18 +55,29 @@ module Amanda
 
       [config, disklist].each do |target|
         src = app.translate(target, amanda_dir, :files)
-        template(src, target, template_binding(name))
+        template(src, target, binding)
 
         sh "chown #{user}:#{group} #{file}"
       end
 
       ['/etc/xinet.d/amanda'].each do |target|
         src = app.filepath(:files, target)
-        template(src, target, template_binding(name))
+        template(src, target, binding)
 
         sh "kill -HUP xinetd_process_id"
       end if xinetd
     
+      # still to add... crontab
+      # 0 16 * * 1-5 /usr/local/sbin/amcheck -m confname
+      # 45 0 * * 2-6 /usr/local/sbin/amdump confname
+
+      template(app.filepath(:files, 'amanda/amandahosts'), "~#{user}/.amandahosts", binding)
+
+      sh "chown amandabackup ~#{user} ~#{user}/.amandahosts"
+      sh "chmod 755 ~#{user}"
+      sh "chmod 600 ~#{user}/.amandahosts"
+
+      # dumpdates?
     end
 
     def template(src, target, binding)

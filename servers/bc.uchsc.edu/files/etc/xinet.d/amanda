@@ -7,7 +7,7 @@ service amanda
     user             = <%= user %>
     group            = <%= group %>
     groups           = yes
-    server           = <%= LIBEXECDIR %>/amandad 
+    server           = <%= libexecdir %>/amandad 
 }
 
 service amandaidx
@@ -19,7 +19,7 @@ service amandaidx
     user             = <%= user %>
     group            = <%= group %>
     groups           = yes
-    server           = <%= LIBEXECDIR %>/amindexd 
+    server           = <%= libexecdir %>/amindexd 
 } 
 
 service amidxtape
@@ -31,6 +31,6 @@ service amidxtape
     user             = <%= user %>
     group            = <%= group %>
     groups           = yes
-    server           = <%= LIBEXECDIR %>/amidxtaped
+    server           = <%= libexecdir %>/amidxtaped
 } 
 

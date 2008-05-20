@@ -6,25 +6,27 @@ module Amanda
   #
   class SetupDrive < Tap::FileTask
     
-    config :target, "/dumps"  # TODO -- check not nil, and does not exist.  the target folder for the dumps
+    config :space, "/dumps"   # TODO -- check not nil, and does not exist.  the space folder for the dumps
     config :n_slots, 5        # TODO -- check > 1
+    config :user, 'amandabackup'
+    config :group, 'disk'
 
-    def process
-      sh "mkdir -p #{target}/vtapes"
-      sh "chown amanda:disk #{target}/vtapes"
-      sh "chmod 750 #{target}/vtapes"
+    def process(name)
+      sh "mkdir -p #{space}/vtapes"
+      sh "chown #{user}:#{group} #{space}/vtapes"
+      sh "chmod 750 #{space}/vtapes"
 
-      sh "sudo -u amanda mkdir -p #{target}/vtapes/daily/slots"
+      sh "sudo -u #{user} mkdir -p #{space}/vtapes/#{name}/slots"
 
-      FileUtils.cd "#{target}/vtapes/daily/slots"
+      FileUtils.cd "#{space}/vtapes/#{name}/slots"
       1.upto(n_slots) do |slot|
-        sh "sudo -u amanda mkdir slot#{slot}"
+        sh "sudo -u #{user} mkdir slot#{slot}"
       end
 
-      sh "sudo -u amanda ln -s slot1 data"
+      sh "sudo -u #{user} ln -s slot1 data"
 
       1.upto(n_slots) do |slot|
-        sh "sudo -u amanda amlabel daily daily-#{slot} slot #{slot}"
+        sh "sudo -u #{user} amlabel #{name} #{name}-#{slot} slot #{slot}"
       end
     end
     
