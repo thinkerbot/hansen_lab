@@ -1,0 +1,69 @@
+# sample Amanda2 disklist file, derived from CS.UMD.EDU's disklist
+#
+# If your configuration is called, say, "csd2", then this file normally goes
+# in /etc/amanda/csd2/disklist.
+#
+# File format is:
+#
+#	hostname diskdev dumptype
+#
+# where the dumptypes are defined by you in amanda.conf.
+
+
+# At our site, root partitions have a different dumptype because they
+# are of lower priority; they don't contain user data, and don't change
+# much from the department prototype.  In a crunch, they can be left for
+# last or skipped.
+
+## A SPARCstation 1+
+#salty sd0a comp-root
+#salty sd0g comp-user
+#salty sd1g comp-user
+#salty sd2a comp-root
+#salty sd2g comp-user
+#salty sd3c comp-user
+#
+## A DECstation 3100
+#slithy rz1a comp-root
+#slithy rz1g comp-user
+#slithy rz3a comp-root
+#slithy rz3g comp-user
+#
+## We don't run compression on the master host since it is going to be
+## busy enough running amanda.
+#master sd0a nocomp-root -1 local
+#master sd0g nocomp-user -1 local
+## note: -1 is a placeholder for the spindle number
+## the holding disk can't be dumped to itself, it uses a disktype that
+## specifies the "no-hold" option (see amanda.conf).
+#master sd1c holding-disk -1 local
+#
+## The chairman's disk is high priority to make sure it gets done.
+#bigwig	sd0a comp-root
+#bigwig	sd0g comp-high
+## Likewise the named databases in the root partition on our primary
+## nameserver.  Also, compression is turned off because we don't want
+## to create any unnecessary load on this baby (it's only a Sun3).
+#bozo        sd0a nocomp-high
+#bozo        sd0g nocomp-user
+#bozo        sd4c nocomp-user
+#
+## Dump Joe's NetBSD machine, with the mounted MS-DOS partition dumped
+## using tar.
+#joespc  wd0a comp-root
+#joespc  wd0e comp-user
+#joespc	/msdos comp-user-tar
+#
+## Some really slow machines, like Sun2's and some Vaxstations, take
+## forever to compress their dumps: it's just not worth it.
+#
+## A Sun2
+#cleo     sd0a nocomp-root
+#cleo     sd0g nocomp-user
+## A VaxStation
+#susie         rz8a nocomp-root
+#susie         rz8g nocomp-user
+#
+## and so on ... well, you get the idea
+
+localhost /etc comp-root-tar
