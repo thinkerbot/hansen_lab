@@ -1,46 +1,70 @@
 module Amanda
   # == Description
-  # Prints a the configuration information, as documented in the
-  # {Quick Start}[http://wiki.zmanda.com/index.php/Quick_start]
+  # Assembles (some) configuration information used by the Amanda::Setup task.  
+  # The Info task must be run by a user with sufficient privileges for amadmin and
+  # reading various files; ususally root is necessary.
   #
-  # Services should have entries like:
-  # * amanda 10080/udp
-  # * amandaidx 10082/tcp
-  # * amidxtape 10083/tcp 
-  #
-  #-- TODO
-  # The defaults for the amanda/setup task should be constructed 
-  # as the output of info.
-  # * looks like we use xinetd (Fedora -- check for this?)
+  # See the Amanda {Quick Start}[http://wiki.zmanda.com/index.php/Quick_start]
+  # for more information.
   #
   # === Usage
   # tap run amanda/info
   #
   class Info < Tap::FileTask
-
-    config :fields, %w{CLIENT_LOGIN CONFIG_DIR AMANDA_DBGDIR libexecdir listed_incr_dir}
-
-    def process
-      lines = capture_sh("/usr/sbin/amadmin xx version").split(/\n/)
-      info = {}
-
-      puts
-      puts "amadmin:"
-      lines.each do |line|
-        fields.each do |field|
-          next if line.index(field) == nil
-          puts line.strip
-          info[field] = line
-        end
+    
+    # A hash of configurations that are extracted from the output of:
+    #
+    #   % /usr/sbin/amadmin xx version
+    #
+    # The keys correspond to those used by Amanda::Setup
+    MAP = {
+      :user => 'CLIENT_LOGIN',
+      :config_dir => 'CONFIG_DIR',
+      :debug_dir => 'AMANDA_DBGDIR',
+      :libexecdir => 'libexecdir',
+      :listed_incr_dir => 'listed_incr_dir'}
+    
+    config :services, ['amanda 10080/udp', 'amandaidx 10082/tcp', 'amidxtape 10083/tcp'] # A list of the services expected by Amanda
+    
+    config :services_file, '/etc/services'    # The services file
+    
+    config :xinetd_file, '/etc/xinetd.conf'  # The xinetd config file
+    
+    # Returns true if all services are present in the services_file. 
+    def check_services
+      str = File.read(services_file)
+      missing_services = services.select do |service|
+        # the service entries often have multiple spaces...
+        # ensure the regexp can handle variable spacing 
+        str !~ Regexp.new(service.gsub(/\s/, '\s+'))
       end
 
-      puts
-      puts "/etc/services:"
-      info['services'] = File.read('/etc/services').split(/\n/).select do |line|
-        next(false) if line.index('amanda') == nil
-        puts line
+      if missing_services.empty?
         true
+      else
+        log :warn, "missing amanda services in '/etc/services': [#{missing_services.join(', ')}]"
+        false
       end
+    end
+    
+    # Returns true if the xinetd_file exists
+    def check_xinetd
+      File.exists?(xinetd_file)
+    end
+    
+    def process
+      info = {}
+      str = capture_sh("/usr/sbin/amadmin xx version")
+      MAP.each_pair do |field, value|
+        unless str =~ Regexp.new(%Q{#{value}="([^"]+)"})
+          raise "\ncould not identify mapped field: #{field} (#{value})\n#{str}"
+        end
+    
+        info[field] = $1
+      end
+      
+      info[:services] = check_services
+      info[:xinetd] = check_xinetd
 
       info
     end
