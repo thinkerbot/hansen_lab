@@ -92,7 +92,7 @@ module Amanda
 
       template(app.filepath(:templates, 'amanda', 'amandahosts'), File.expand_path("~#{user}/.amandahosts"), binding)
 
-      sh "chown amandabackup ~#{user} ~#{user}/.amandahosts"
+      sh "chown #{user} ~#{user} ~#{user}/.amandahosts"
       sh "chmod 755 ~#{user}"
       sh "chmod 600 ~#{user}/.amandahosts"
 
