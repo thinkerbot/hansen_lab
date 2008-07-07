@@ -30,6 +30,7 @@ module Xcalibur
       config :point_char, '.'           # a character used for each intensity point
       config :min, 0.0, &c.float        # min relative intenisty
       config :max, 100.0, &c.float      # max relative intenisty
+      config :sort, false, &c.switch   # sort by intensity
 
       def process(filepath)
         target = app.filepath(:data, "peak_#{File.basename(filepath)}" )
@@ -42,12 +43,18 @@ module Xcalibur
         end
         
         range = min..max
-        peak_file.data.collect! do |(mz, intensity)|
+        peak_file.data = peak_file.data.collect do |(mz, intensity)|
           percent = (intensity / max_intensity * 100)
           next unless range.include?(percent)
           
           [mz, intensity, point_char * percent.round]
-        end.compact!
+        end.compact
+        
+        if sort
+          peak_file.data = peak_file.data.sort_by do |(mz, intensity)|
+            intensity
+          end.reverse
+        end
         
         File.open(target, "wb") do |file|
           file << peak_file.to_s

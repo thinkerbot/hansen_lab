@@ -60,13 +60,13 @@ module Xcalibur
       ]
       
       # An array of description lines
-      attr_reader :desc
+      attr_accessor :desc
       
       # A hash of headers
-      attr_reader :headers
+      attr_accessor :headers
       
       # An array of (mz, intensity) values
-      attr_reader :data
+      attr_accessor :data
       
       def initialize(desc=[], headers={}, data=[])
         @desc = desc
