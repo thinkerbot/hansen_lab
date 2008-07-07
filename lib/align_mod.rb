@@ -1,4 +1,4 @@
-# == Description
+# :manifest: align mascot peptide ids at a modification
 # Aligns Mascot peptide identifications along a modification boundary.
 #
 # For example:
@@ -20,18 +20,15 @@
 # be turned into a table by using RedCloth (for example by posting the result
 # as a message to Basecamp), or you can modify the output with the configs.
 #
-# === Usage
-#   tap run -- align_mod [options] INPUT_FILE
-#
 class AlignMod < Tap::FileTask
   
   config :header_row, false                     # should be true if there is a header row
   config :input_column_delimiter, "\t"    # the input column delimiter
-  config :mod_numbers, [3,4]                 # the alignment modification number
+  config :mod_numbers, [1]                 # the alignment modification number
   
-  config :output_empty_cell, "."             # the content for empty output cells
-  config :output_line_format, "|%s|"       # the format string for the output lines
-  config :output_column_delimiter, "|"   # the output column delimiter
+  config :output_empty_cell, ""             # the content for empty output cells
+  config :output_line_format, "%s"       # the format string for the output lines
+  config :output_column_delimiter, "\t"   # the output column delimiter
   
   def format_row(data)
     output_line_format % data.join(output_column_delimiter)
@@ -40,9 +37,9 @@ class AlignMod < Tap::FileTask
   def process(filepath)
 
     target = app.filepath(:data, basename(filepath, '.txt') )
-    prepare(target) 
-    
     array = File.read(filepath).split(/\r?\n/)
+    
+    prepare(target) 
     File.open(target, "wb") do |file|
       
       # handle the header row.  Note that the headers need to be
@@ -52,6 +49,7 @@ class AlignMod < Tap::FileTask
         file.puts format_row(headers)
       end
       
+      sequence_locations = {}
       array.each do |line|
         seq, locator, identifier = line.split(input_column_delimiter, 3)
         identifiers = identifier.to_s.split(input_column_delimiter)
@@ -62,12 +60,16 @@ class AlignMod < Tap::FileTask
         end
         
         locator = $1
+        locations = sequence_locations[seq] ||= []
         split_locations = [] 
         0.upto(locator.length-1) do |index|
-          split_locations << index if mod_numbers.include?(locator[index, 1].to_i)
+          if mod_numbers.include?(locator[index, 1].to_i)
+            unless locations.include?(index)
+              split_locations << index
+              locations << index
+            end
+          end
         end
-        
-        log :warn, "no mods in: #{line}" if split_locations.empty?
         
         split_locations.each_with_index do |location, index|
           data = [

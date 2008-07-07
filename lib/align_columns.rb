@@ -1,9 +1,6 @@
-# == Description
+# :manifest: align table data across multiple files
 # Aligns the data across multiple files.  Takes a list of tab-delimited 
 # input files.
-#
-# === Usage
-#   % tap run -- align_columns TARGET_FILE, INPUT_FILES...
 #
 class AlignColumns < Tap::FileTask
 

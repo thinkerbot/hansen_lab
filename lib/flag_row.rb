@@ -1,4 +1,4 @@
-# == Description
+# :manifest: flag rows in a table
 # Cycles through the rows in a table and adds a field indicating
 # whether or not a given row matches a specified pattern.  You
 # can specify the column to check by name (in which case the
@@ -12,9 +12,6 @@
 #   # match the first (ie index == 0) column with entries
 #   # like 'a mouse' or 'a human'
 #   % tap run -- flag_row FILE --column=0 --pattern="a mouse|a human"
-#
-# === Usage
-#   % tap run -- flag_row [options] INPUT_FILE
 #
 class FlagRow < Tap::FileTask
 
