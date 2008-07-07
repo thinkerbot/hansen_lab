@@ -75,5 +75,6 @@
 # Specify code to execute before and after Tap executes
 #before: |
 #  puts "beginning..."
+#  Tap::Env.instance.discover_gems
 #after: |
 #  puts "done!"
