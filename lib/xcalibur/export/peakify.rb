@@ -2,7 +2,7 @@ require 'xcalibur/export/peak_file'
 
 module Xcalibur
   module Export
-    # :manifest: adds graph data to an exported peak file
+    # :startdoc::manifest adds graph data to an exported peak file
     # Peakify adds points to signify the relative intensity 
     # (ie the rounded intensity/max_intensity) of peaks in 
     # an exported peak list.  This can be useful as a visual aid. 
@@ -24,13 +24,12 @@ module Xcalibur
     # range of relative intensities.  Peakify can handle exported 
     # peak lists from Xcalibur Qual  Browser (v 2.0).
     #
-    
     class Peakify < Tap::FileTask
     
       config :point_char, '.'           # a character used for each intensity point
       config :min, 0.0, &c.float        # min relative intenisty
       config :max, 100.0, &c.float      # max relative intenisty
-      config :sort, false, &c.switch   # sort by intensity
+      config :sort, false, &c.flag      # sort by intensity
 
       def process(filepath)
         target = app.filepath(:data, "peak_#{File.basename(filepath)}" )

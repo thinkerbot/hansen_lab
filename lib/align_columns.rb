@@ -1,18 +1,18 @@
-# :manifest: align table data across multiple files
-# Aligns the data across multiple files.  Takes a list of tab-delimited 
+# startdoc::manifest align table data across multiple files
+# Aligns the table data across multiple files.  Takes a list of tab-delimited 
 # input files.
 #
 class AlignColumns < Tap::FileTask
 
-  config :row_delimiter, "\n"           # row delimiter
-  config :col_delimiter, "\t"            # column delimiter
-  config :blank_value, ""                # the blank value
+  config :row_sep, "\n", &c.string     # row delimiter
+  config :col_sep, "\t", &c.string     # column delimiter
+  config :blank_value, "", &c.string   # the blank value
   
-  config :header_row, false, &c.yaml(Object)   # specifies handling of header rows
-  config :sort_column, 0, &c.yaml(Object)       # specifies the sort column, index or name
+  config :header_row, false, &c.flag   # specifies handling of header rows
+  config :sort_column, 0, &c.yaml      # specifies the sort column, index or name
   
   def format_row(data)
-    data.join(col_delimiter * 2) + row_delimiter
+    data.join(col_sep * 2) + row_sep
   end
   
   def process(target, *filepaths)
@@ -21,7 +21,7 @@ class AlignColumns < Tap::FileTask
     tables = filepaths.collect do |filepath|
       log_basename :align, filepath
       
-      rows = HansenLab::NormalTable.parse_rows(File.read(filepath), row_delimiter, col_delimiter)
+      rows = HansenLab::NormalTable.parse_rows(File.read(filepath), row_sep, col_sep)
       HansenLab::NormalTable.new(rows, :default_value => blank_value, :header_row => header_row)
     end
     
@@ -71,14 +71,14 @@ class AlignColumns < Tap::FileTask
         unless table.n_columns == 0
           array = table.blank_row
           array[0] = "# #{File.basename(filepath)}"
-          header << array.join(col_delimiter)
+          header << array.join(col_sep)
         end
       end
       file.print format_row(header)
       
       # print header if applicable
       if header_row
-        row = tables.collect {|table| table.header_row.join(col_delimiter)}
+        row = tables.collect {|table| table.header_row.join(col_sep)}
         file.print format_row(row)
       end
       
@@ -87,7 +87,7 @@ class AlignColumns < Tap::FileTask
         tables.each_with_index do |table, index|
           row_index = key_hashes[index][key]
           rows = row_index.collect do |i| 
-            (i == nil ? table.blank_row : table.rows[i]).join(col_delimiter)
+            (i == nil ? table.blank_row : table.rows[i]).join(col_sep)
           end
           
           key_rows << rows

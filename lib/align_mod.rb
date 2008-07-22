@@ -1,4 +1,4 @@
-# :manifest: align mascot peptide ids at a modification
+# :startdoc::manifest align mascot peptide ids at a modification
 # Aligns Mascot peptide identifications along a modification boundary.
 #
 # For example:
@@ -22,16 +22,16 @@
 #
 class AlignMod < Tap::FileTask
   
-  config :header_row, false                     # should be true if there is a header row
-  config :input_column_delimiter, "\t"    # the input column delimiter
-  config :mod_numbers, [1]                 # the alignment modification number
+  config :header_row, false, &c.flag            # should be set if there is a header row
+  config :input_col_sep, "\t", &c.string        # the input column delimiter
+  config :mod_numbers, [1], :arg_name => '[1, 2, 3]', &c.array   # the alignment modification number
   
-  config :output_empty_cell, ""             # the content for empty output cells
-  config :output_line_format, "%s"       # the format string for the output lines
-  config :output_column_delimiter, "\t"   # the output column delimiter
+  config :output_empty_cell, "", &c.string      # the content for empty output cells
+  config :output_line_format, "%s", &c.string   # the format string for the output lines
+  config :output_col_sep, "\t", &c.string       # the output column delimiter
   
   def format_row(data)
-    output_line_format % data.join(output_column_delimiter)
+    output_line_format % data.join(output_col_sep)
   end
   
   def process(filepath)
@@ -45,14 +45,14 @@ class AlignMod < Tap::FileTask
       # handle the header row.  Note that the headers need to be
       # moved around a little to conform to the output format.
       if header_row
-        headers = ["", "", ""] + array.shift.split(input_column_delimiter)[2..-1]
+        headers = ["", "", ""] + array.shift.split(input_col_sep)[2..-1]
         file.puts format_row(headers)
       end
       
       sequence_locations = {}
       array.each do |line|
-        seq, locator, identifier = line.split(input_column_delimiter, 3)
-        identifiers = identifier.to_s.split(input_column_delimiter)
+        seq, locator, identifier = line.split(input_col_sep, 3)
+        identifiers = identifier.to_s.split(input_col_sep)
         
         # checks
         unless locator =~ /^\d\.(\d+)\.\d$/ && seq.length == $1.length
