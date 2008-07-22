@@ -27,8 +27,8 @@ module Xcalibur
     class Peakify < Tap::FileTask
     
       config :point_char, '.'           # a character used for each intensity point
-      config :min, 0.0, &c.float        # min relative intenisty
-      config :max, 100.0, &c.float      # max relative intenisty
+      config :min, 0, &c.num            # min relative intenisty
+      config :max, 100, &c.num          # max relative intenisty
       config :sort, false, &c.flag      # sort by intensity
 
       def process(filepath)
