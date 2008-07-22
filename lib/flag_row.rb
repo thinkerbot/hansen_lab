@@ -20,6 +20,8 @@ class FlagRow < Tap::FileTask
   
   config :check_column, 0, &c.integer    # the column to check
   config :pattern, /./, &c.regexp        # the matching pattern
+  config :flag, 1                        # the flag value
+  config :no_flag, 0                     # the not-flagged value
 
   # process defines what the task does; use the
   # same number of inputs to enque the task
@@ -43,7 +45,7 @@ class FlagRow < Tap::FileTask
     # and collect the results
     rows.collect! do |row|
       columns = row.split(col_sep)
-      columns << (columns[check_column] =~ pattern ? 1 : 0)
+      columns << (columns[check_column] =~ pattern ? flag : no_flag)
       
       # join the columns back up
       columns.join(col_sep)
