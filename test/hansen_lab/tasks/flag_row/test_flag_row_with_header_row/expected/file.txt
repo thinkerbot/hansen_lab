@@ -1,0 +1,4 @@
+name	value
+a	true	1
+b	false	0
+c	true	1

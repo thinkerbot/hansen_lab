@@ -1,8 +1,10 @@
-require File.join(File.dirname(__FILE__), 'tap_test_helper.rb') 
-require 'align_columns'
+require File.join(File.dirname(__FILE__), '../../tap_test_helper.rb') 
+require 'hansen_lab/tasks/align_columns'
 
 class AlignColumnsTest < Test::Unit::TestCase
   acts_as_tap_test 
+  
+  include HansenLab::Tasks
   
   def test_align_columns
     t = AlignColumns.new 
