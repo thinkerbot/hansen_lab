@@ -1,3 +1,5 @@
+require 'hansen_lab/normal_table'
+
 # startdoc::manifest align table data across multiple files
 # Aligns the table data across multiple files.  Takes a list of tab-delimited 
 # input files.

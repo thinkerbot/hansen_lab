@@ -34,10 +34,9 @@ class AlignMod < Tap::FileTask
     output_line_format % data.join(output_col_sep)
   end
   
-  def process(filepath)
+  def process(target, source)
 
-    target = app.filepath(:data, basename(filepath, '.txt') )
-    array = File.read(filepath).split(/\r?\n/)
+    array = File.read(source).split(/\r?\n/)
     
     prepare(target) 
     File.open(target, "wb") do |file|

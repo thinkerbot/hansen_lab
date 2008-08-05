@@ -26,12 +26,12 @@ class FlagRow < Tap::FileTask
   # process defines what the task does; use the
   # same number of inputs to enque the task
   # as specified here
-  def process(filepath)
+  def process(target, source)
     
-    log_basename :process, filepath
+    log_basename :process, source
     
     # load the data and split into rows
-    rows = File.read(filepath).split(row_sep)
+    rows = File.read(source).split(row_sep)
     
     unless check_column.to_s =~ /^\d+$/
       headers = rows.first.split(col_sep)
@@ -55,7 +55,6 @@ class FlagRow < Tap::FileTask
     results = rows.join(row_sep)
     
     # prepare the target file and dump the results
-    target = app.filepath(:data, basename(filepath, ".txt"))
     prepare(target) 
     File.open(target, "wb") do |file|
       file << results

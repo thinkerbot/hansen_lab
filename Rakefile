@@ -3,36 +3,18 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 
-# tasks
-desc 'Default: Run tests.'
-task :default => :test
-
-desc 'Run tests.'
-Rake::TestTask.new(:test) do |t|
-  t.pattern = 'test/**/*_test.rb'
-  t.verbose = true
-  t.warning = true
-end
+require 'tap/constants'
+require 'tap/patches/rake/testtask.rb'
 
 #
 # Gem specification
 #
 
-gemspec = Gem::Specification.new do |s|
-  s.name = "."
-  s.version = "0.0.1"
-  s.author = "Your Name Here"
-  #s.email = "your.email@pubfactory.edu"
-  #s.homepage = "http://rubyforge.org/projects/gemname/"
-  s.platform = Gem::Platform::RUBY
-  s.summary = "Add Description"
-  s.require_path = "lib"
-  s.test_file = "test/tap_test_suite.rb"
-  #s.rubyforge_project = "gemname"
-  s.has_rdoc = true
-  s.add_dependency("tap", ">= 0.10.0")
-  s.extra_rdoc_files = %w{ ReadMe.txt }
-  s.files = Dir.glob("{test,lib}/**/*") + %w{ Rakefile ReadMe.txt tap.yml }
+def gemspec
+  data = File.read('hansen_lab.gemspec')
+  spec = nil
+  Thread.new { spec = eval("$SAFE = 3\n#{data}") }.join
+  spec
 end
 
 Rake::GemPackageTask.new(gemspec) do |pkg|
@@ -72,15 +54,33 @@ end
 
 desc 'Generate documentation.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
-  # configured to generate TDoc documentation ...
-  # to revert, comment out the template and
-  # the --fmt and tdoc options.
-  require 'tap/support/tdoc/config_attr'
-
+  spec = gemspec
+  
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = '.'
+  rdoc.title    = 'hansen_lab'
+  rdoc.options << '--line-numbers' << '--inline-source'
+  rdoc.rdoc_files.include( spec.extra_rdoc_files )
+  rdoc.rdoc_files.include( spec.files.select {|file| file =~ /^lib.*\.rb$/} )
+  
+  # Using Tdoc to template your Rdoc will result in configurations being
+  # listed with documentation in a subsection following attributes.  Not
+  # necessary, but nice.
+  require 'tap/support/tdoc'
   rdoc.template = 'tap/support/tdoc/tdoc_html_template' 
-  rdoc.options << '--line-numbers' << '--inline-source' << '--fmt' << 'tdoc'
-  rdoc.rdoc_files.include( gemspec.extra_rdoc_files )
-  rdoc.rdoc_files.include( gemspec.files.select {|file| file =~ /^lib.*\.rb$/} )
+  rdoc.options << '--fmt' << 'tdoc'
 end
+
+#
+# Test tasks
+#
+
+desc 'Default: Run tests.'
+task :default => :test
+
+desc 'Run tests.'
+Rake::TestTask.new(:test) do |t|
+  t.test_files = Dir.glob( File.join('test', ENV['pattern'] || '**/*_test.rb') )
+  t.verbose = true
+  t.warning = true
+end
+
