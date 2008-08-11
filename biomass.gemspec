@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
-  s.name = "hansen_lab"
+  s.name = "biomass"
   s.version = "0.0.1"
   s.author = "Simon Chiang"
   s.email = "simon.a.chiang@gmail.com"
-  s.homepage = "http://github.com/bahuvrihi/hansen_lab/wikis"
+  s.homepage = "http://github.com/bahuvrihi/biomass/wikis"
   s.platform = Gem::Platform::RUBY
   s.summary = "Code developed for use in the Hansen Lab"
   s.require_path = "lib"
