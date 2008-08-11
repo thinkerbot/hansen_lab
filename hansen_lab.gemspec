@@ -20,8 +20,9 @@ Gem::Specification.new do |s|
   # list the files you want to include here. you can
   # check this manifest using 'rake :print_manifest'
   s.files = %W{
+    lib/hansen_lab/tasks/align_columns.rb
+    lib/hansen_lab/tasks/align_mod.rb
+    lib/hansen_lab/tasks/flag_row.rb
     tap.yml
-    test/tap_test_helper.rb
-    test/tap_test_suite.rb
   }
 end
