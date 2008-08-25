@@ -11,7 +11,7 @@ require 'tap/patches/rake/testtask.rb'
 #
 
 def gemspec
-  data = File.read('biomass.gemspec')
+  data = File.read('hansen_lab.gemspec')
   spec = nil
   Thread.new { spec = eval("$SAFE = 3\n#{data}") }.join
   spec
