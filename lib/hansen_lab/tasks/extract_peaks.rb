@@ -1,4 +1,5 @@
-require 'ms/data_explorer/format/ascii'
+require 'ms'
+require 'ms/spectrum'
 require 'ms/support/binary_search'
 
 module HansenLab
@@ -13,6 +14,8 @@ module HansenLab
       
       config :tol, 100, &c.num                 # ppm tolerance for peak selection
       config :min_intensity, 5, &c.num       # minimum percent intensity
+      
+      config :format, 'ascii'
       
       def range_mzs_in_tol(mzs, mz, tol=0)
         min = mz-tol
@@ -31,7 +34,7 @@ module HansenLab
           check_terminate
           
           log_basename :read, source
-          spectrum = Ms::DataExplorer::Format::Ascii.parse(File.read(source))
+          spectrum = Ms.parse(format, File.read(source))
           min = spectrum.data[1].max * min_intensity / 100
           
           sums = masses.collect do |mass|
