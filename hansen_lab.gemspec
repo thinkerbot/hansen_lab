@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "hansen_lab"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
   s.author = "Simon Chiang"
   s.email = "simon.a.chiang@gmail.com"
   s.homepage = "http://github.com/bahuvrihi/hansen_lab/wikis"
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     lib/hansen_lab/tasks/align_columns.rb
     lib/hansen_lab/tasks/align_mod.rb
     lib/hansen_lab/tasks/flag_row.rb
+    lib/hansen_lab/tasks/extract_peaks.rb
     tap.yml
   }
 end
