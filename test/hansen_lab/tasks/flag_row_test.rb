@@ -10,7 +10,7 @@ class FlagRowTest < Test::Unit::TestCase
     t = FlagRow.new :pattern => /true/, :check_column => 1
     assert_files do |input_files|
       input_files.each do |path|
-        t.enq(method_filepath(:output, t.basename(path, '.txt')), path)
+        t.enq(method_root.filepath(:output, t.basename(path, '.txt')), path)
       end
       
       app.run
@@ -24,7 +24,7 @@ class FlagRowTest < Test::Unit::TestCase
     
     assert_files do |input_files|
       input_files.each do |path|
-        t.enq(method_filepath(:output, t.basename(path, '.txt')), path)
+        t.enq(method_root.filepath(:output, t.basename(path, '.txt')), path)
       end
       
       app.run

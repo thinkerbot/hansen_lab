@@ -10,7 +10,7 @@ class AlignModTest < Test::Unit::TestCase
     t = AlignMod.new :mod_numbers => [4], :output_col_sep => '|',  :output_line_format => '|%s|', :output_empty_cell => '.'
     assert_files do |input_files|
       input_files.each do |path|
-        t.enq(method_filepath(:output, t.basename(path, '.txt')), path)
+        t.enq(method_root.filepath(:output, t.basename(path, '.txt')), path)
       end
       
       app.run

@@ -9,7 +9,7 @@ class AlignColumnsTest < Test::Unit::TestCase
   def test_align_columns
     t = AlignColumns.new 
     assert_files do |input_files|
-      t.enq(method_filepath(:output, "align.txt"), *input_files)
+      t.enq(method_root.filepath(:output, "align.txt"), *input_files)
       
       app.run
       app.results(t)
@@ -19,7 +19,7 @@ class AlignColumnsTest < Test::Unit::TestCase
   def test_align_columns_with_header
     t = AlignColumns.new :header_row => true, :sort_column => 'SORT'
     assert_files do |input_files|
-      t.enq(method_filepath(:output, "align.txt"), *input_files)
+      t.enq(method_root.filepath(:output, "align.txt"), *input_files)
       
       app.run
       app.results(t)
