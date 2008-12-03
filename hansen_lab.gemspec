@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.add_dependency("sample_tasks", ">= 0.11")
   s.add_dependency("ms-xcalibur", ">= 0.1.0")
   s.add_dependency("ms-mascot", ">= 0.1.0")
+  s.add_dependency("hpricot", ">= 0.6")
   s.extra_rdoc_files = %W{
     README
     MIT-LICENSE
@@ -20,6 +21,7 @@ Gem::Specification.new do |s|
   # list the files you want to include here. you can
   # check this manifest using 'rake :print_manifest'
   s.files = %W{
+    cmd/search_raw.rb
     lib/hansen_lab/tasks/align_columns.rb
     lib/hansen_lab/tasks/align_mod.rb
     lib/hansen_lab/tasks/flag_row.rb
