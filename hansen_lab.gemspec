@@ -8,11 +8,13 @@ Gem::Specification.new do |s|
   s.summary = "Code developed for use in the Hansen Lab"
   s.require_path = "lib"
   s.has_rdoc = true
-  s.add_dependency("tap", ">= 0.11")
+  s.add_dependency("tap", ">= 0.12")
   s.add_dependency("sample_tasks", ">= 0.11")
   s.add_dependency("ms-xcalibur", ">= 0.1.0")
   s.add_dependency("ms-mascot", ">= 0.1.0")
   s.add_dependency("hpricot", ">= 0.6")
+  s.rdoc_options.concat %W{--main README -S -N --title Hansen\sLab}
+  
   s.extra_rdoc_files = %W{
     README
     MIT-LICENSE
